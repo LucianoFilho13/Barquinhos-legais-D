@@ -10,6 +10,17 @@ class CannonBall {
     World.add(world, this.body);
   }
 
+  remove(index){
+    Matter.Body.setVelocity(this.body, {x:0, y:0});
+
+    setTimeout(() => {
+    Matter.World.remove(world, this.body);
+    delete balls[index];
+
+    }, 1999 );
+
+  }
+
   shoot() {
      var newAngle = cannon.angle - 28;
     newAngle = newAngle *(3.14/180)

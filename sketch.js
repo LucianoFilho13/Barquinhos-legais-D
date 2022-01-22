@@ -53,6 +53,7 @@ function draw() {
 
   for (var i = 0; i < balls.length; i++) {
     showCannonBalls(balls[i], i);
+    colissao(i)
   }
 
   showBoats();
@@ -71,6 +72,9 @@ function keyPressed() {
 function showCannonBalls(ball, index) {
   if (ball) {
     ball.display();
+    if(ball.body.position.x >= width || ball.body.position.y >= height-50){
+      ball.remove(index);
+    }
   }
 }
 
@@ -82,10 +86,30 @@ function keyReleased() {
   }
 }
 
+function colissao(index){
+  for (var i = 0; i < boats.length; i++) {
+    if(balls[index] != undefined && boats[i] != undefined){
+      var coli = Matter.SAT.collides(balls[index].body, boats[i].body);
+
+      if(coli.collided){
+        Matter.World.remove (world, balls[index].body)
+        Matter.World.remove (world, boats[i].body)
+
+        delete balls[index];
+        delete boats[i];
+
+      }
+    }
+
+  }
+
+}
+
 function showBoats(){
   if (boats.length > 0){
   //criando mais navios :)
-  if (boats[boats.length -1].body.position.x < width -300){
+
+  if (boats[boats.length -1] === undefined || boats[boats.length -1].body.position.x < width -300){
     var roberto = [-60,-78,-75,-80,-50,-87,-93];
     var carlos = random(roberto);
     var boat = new Boat(width, height - 60, 170, 170,carlos);
@@ -96,9 +120,9 @@ function showBoats(){
   for (var i = 0; i < boats.length; i ++){
     if (boats[i]){
       Matter.Body.setVelocity(boats[i].body,{x: -0.9,y:0});
-
+      boats[i].display();
     }
-    boats[i].display();
+    
   }
 
     } else {
